@@ -2,7 +2,7 @@
 
 from sw_onto_generation import ENUM_CLASSES
 
-from sw_nebula_service.engine.engine import NebulaEngine, NebulaEngineConfig
+from sw_nebula_service.engine import NebulaEngine, NebulaEngineConfig
 from sw_nebula_service.models import LibNode, OntologyNode, RootNode
 
 

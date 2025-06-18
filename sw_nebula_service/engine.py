@@ -7,8 +7,8 @@ from pydantic import BaseModel
 from rich import print as rprint
 from sw_onto_generation.base.base_relation import BaseRelation
 
-from sw_nebula_service.engine.utils import format_field_value_for_nebula_graph, pascal_case_to_snake_case, pydantic_type_to_nebula_type, result_to_df
 from sw_nebula_service.models import BaseNebulaRelation
+from sw_nebula_service.utils import format_field_value_for_nebula_graph, pascal_case_to_snake_case, pydantic_type_to_nebula_type, result_to_df
 
 
 class NebulaEngineConfig(BaseModel):

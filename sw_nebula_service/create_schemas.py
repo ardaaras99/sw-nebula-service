@@ -10,7 +10,7 @@ from rich import print as rprint
 from sw_onto_generation.base.base_node import BaseNode
 from sw_onto_generation.base.base_relation import BaseRelation
 
-from sw_nebula_service.engine.engine import NebulaEngine, NebulaEngineConfig
+from sw_nebula_service.engine import NebulaEngine, NebulaEngineConfig
 from sw_nebula_service.models import PREDEFINED_EDGE_CLASSES, PREDEFINED_NODE_CLASSES, BaseNebulaNode, BaseNebulaRelation
 
 
