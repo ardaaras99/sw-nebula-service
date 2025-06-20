@@ -103,7 +103,10 @@ class NebulaEngine:
             value = data.get(field_name)
             formatted_data.append(format_field_value_for_nebula_graph(value))
         values_str = ", ".join(formatted_data)
-        query = f'INSERT VERTEX IF NOT EXISTS {tag_name} VALUES "{vid}": ({values_str})'  # noqa: S608
+        if isinstance(vid, int):
+            query = f"INSERT VERTEX IF NOT EXISTS {tag_name} VALUES {vid}: ({values_str})"  # noqa: S608
+        else:
+            query = f'INSERT VERTEX IF NOT EXISTS {tag_name} VALUES "{vid}": ({values_str})'  # noqa: S608
         rprint(f"query: {query}")
         with self.session(name_space) as session:
             max_retries = 10
