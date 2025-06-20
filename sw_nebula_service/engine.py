@@ -95,7 +95,7 @@ class NebulaEngine:
             else:
                 raise Exception(f"Failed to create tag {tag_name}: {result.error_msg()}")
 
-    def insert_node(self, name_space: str, node: BaseModel) -> bool:
+    def insert_node(self, name_space: str, node: BaseModel, vid: int | str) -> bool:
         data = node.model_dump()
         tag_name = pascal_case_to_snake_case(node.__class__.__name__)
         formatted_data = []
@@ -103,7 +103,7 @@ class NebulaEngine:
             value = data.get(field_name)
             formatted_data.append(format_field_value_for_nebula_graph(value))
         values_str = ", ".join(formatted_data)
-        query = f'INSERT VERTEX IF NOT EXISTS {tag_name} VALUES "{node.vid}": ({values_str})'  # noqa: S608
+        query = f'INSERT VERTEX IF NOT EXISTS {tag_name} VALUES "{vid}": ({values_str})'  # noqa: S608
         rprint(f"query: {query}")
         with self.session(name_space) as session:
             max_retries = 10
@@ -114,8 +114,8 @@ class NebulaEngine:
             while retry_count < max_retries:
                 result = session.execute(query)
                 if result.is_succeeded():
-                    rprint(f"Node {node.vid} inserted successfully")
-                    return node.vid
+                    rprint(f"Node {vid} inserted successfully")
+                    return vid
                 else:
                     retry_count += 1
                     if retry_count < max_retries:
