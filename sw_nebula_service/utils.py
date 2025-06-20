@@ -37,8 +37,7 @@ def pydantic_type_to_nebula_type(field_type: type) -> str:
 
 def format_field_value_for_nebula_graph(value: Any) -> str:
     if isinstance(value, datetime):
-        # return f'timestamp("{value.strftime("%Y-%m-%dT%H:%M:%S")}")'
-        return "now"
+        return f'timestamp("{value.strftime("%Y-%m-%dT%H:%M:%S")}")'
     elif isinstance(value, list | dict):
         return f'"{json.dumps(value)}"'
     elif value is None:
