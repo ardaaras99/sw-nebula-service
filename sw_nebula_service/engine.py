@@ -61,7 +61,7 @@ class NebulaEngine:
             CREATE SPACE IF NOT EXISTS {name_space} (
                 partition_num = {partition_num},
                 replica_factor = {replica_factor},
-                vid_type = FIXED_STRING(32)
+                vid_type = INT64
             )
             """
             result = session.execute(query)
