@@ -5,8 +5,8 @@ from sw_nebula_service.models import LibNode, OntologyNode, RootNode
 
 
 def insert_directory_nodes(engine: NebulaEngine, name_space: str):
-    node = RootNode(vid="root", name="root")
-    root_vid = engine.insert_node(name_space=name_space, node=node)
+    node = RootNode(name="root")
+    root_vid = engine.insert_node(name_space=name_space, node=node, vid="root")
 
     for lib_name in DIR_STRUCTURE.keys():
         lib_vid = engine.insert_node(name_space=name_space, node=LibNode(name=f"lib_{lib_name}"), vid=f"lib_{lib_name}")
