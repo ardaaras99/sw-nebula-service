@@ -231,10 +231,10 @@ class NebulaEngine:
             else:
                 raise Exception(f"Failed to create edge type {edge_type}: {result.error_msg()}")
 
-    def insert_edge_without_property(self, name_space: str, edge_type: str, src_vid: str, dst_vid: str) -> bool:
+    def insert_edge_without_property(self, name_space: str, edge_type: str, src_vid: int, dst_vid: int) -> bool:
         with self.session(name_space) as session:
-            query = f'INSERT EDGE IF NOT EXISTS {edge_type} () VALUES "{src_vid}"->"{dst_vid}":()'  # noqa: S608
-            rprint(f"Inserting edge {edge_type} from {src_vid} -> {dst_vid}")
+            query = f"INSERT EDGE IF NOT EXISTS {edge_type} () VALUES {src_vid}->{dst_vid}:()"  # noqa: S608
+            rprint(f"query: {query}")
             result = session.execute(query)
             if result.is_succeeded():
                 return True
