@@ -44,6 +44,8 @@ def format_field_value_for_nebula_graph(value: Any) -> str:
         return "NULL"
     elif isinstance(value, bool):
         return str(value).lower()
+    elif isinstance(value, int):
+        return value
     else:
         return f'"{str(value)}"'
 
