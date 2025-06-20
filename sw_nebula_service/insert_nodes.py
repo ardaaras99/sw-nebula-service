@@ -22,8 +22,12 @@ def insert_directory_nodes(engine: NebulaEngine):
             engine.insert_edge_without_property(name_space=name_space, edge_type="has_ontology", src_vid=lib_vid, dst_vid=ontology_vid)
 
 
-if __name__ == "__main__":
+def main():
     engine = NebulaEngine(config=NebulaEngineConfig(host="0.0.0.0", port=9669, username="root", password="nebula"))
     insert_directory_nodes(engine=engine)
+
+
+if __name__ == "__main__":
+    main()
 
 # %%
