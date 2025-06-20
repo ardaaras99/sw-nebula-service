@@ -8,7 +8,7 @@ def insert_directory_nodes(engine: NebulaEngine, name_space: str):
     node = RootNode(name="root")
     root_vid = engine.insert_node(name_space=name_space, node=node, vid=111)
 
-    for i, lib_name in enumerate(DIR_STRUCTURE.keys()):
+    for i, lib_name in enumerate(DIR_STRUCTURE.keys(), start=1):
         lib_vid = engine.insert_node(
             name_space=name_space,
             node=LibNode(name=f"lib_{lib_name}"),
@@ -20,11 +20,11 @@ def insert_directory_nodes(engine: NebulaEngine, name_space: str):
             src_vid=root_vid,
             dst_vid=lib_vid,
         )
-        for j, ontology_name in enumerate(DIR_STRUCTURE[lib_name]):
+        for j, ontology_name in enumerate(DIR_STRUCTURE[lib_name], start=i + 1):
             ontology_vid = engine.insert_node(
                 name_space=name_space,
                 node=OntologyNode(name=f"onto_{ontology_name}"),
-                vid=i + j,
+                vid=j,
             )
             engine.insert_edge_without_property(
                 name_space=name_space,
