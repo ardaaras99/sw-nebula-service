@@ -21,15 +21,21 @@ TYPE_MAPPING = {
 def convert_fields_of_class_to_nebula_types(node_class: type[BaseNode] | type[BaseNebulaNode] | type[BaseModel]) -> str:
     fields = []
     for field_name, field_info in node_class.model_fields.items():
+        # rprint(f"field_info.annotation: {field_info.annotation}")
         if field_info.annotation is None:
             raise ValueError(f"field_name: {field_name} is None")
+        #! BaseModel check added to skip like Adres inside of Insan
         elif isinstance(field_info.annotation, types.UnionType):
             args = getattr(field_info.annotation, "__args__", ())
             for arg in args:
                 if arg is type(None):
                     continue
+                elif issubclass(arg, BaseModel):
+                    continue
                 else:
                     possible_type = arg
+        elif issubclass(field_info.annotation, BaseModel):
+            continue
         else:
             possible_type = field_info.annotation
         fields.append(f"{field_name} {TYPE_MAPPING.get(possible_type)}")
@@ -49,6 +55,7 @@ class TagManager:
             if result.is_succeeded():
                 rprint(f"Tag {tag_name} created successfully")
             else:
+                rprint(f"Failed query: {query}")
                 raise Exception(f"Failed to create tag {tag_name}: {result.error_msg()}")
 
     def create_tag_index(self, name_space: str, tag_name: str, index_name: str) -> bool:
