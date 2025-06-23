@@ -15,21 +15,16 @@ from sw_nebula_service.models import BaseNebulaNode, BaseNebulaRelation, LibNode
 class EngineConfig(BaseModel):
     model_config = {"arbitrary_types_allowed": True}
     connector: Connector
-    space_manager: SpaceManager
-    tag_manager: TagManager
-    vertex_manager: VertexManager
-    edge_type_manager: EdgeTypeManager
-    edge_manager: EdgeManager
 
 
 class Engine:
     def __init__(self, config: EngineConfig):
         self.connector = config.connector
-        self.space_manager = config.space_manager
-        self.tag_manager = config.tag_manager
-        self.vertex_manager = config.vertex_manager
-        self.edge_type_manager = config.edge_type_manager
-        self.edge_manager = config.edge_manager
+        self.space_manager = SpaceManager(self.connector)
+        self.tag_manager = TagManager(self.connector)
+        self.vertex_manager = VertexManager(self.connector)
+        self.edge_type_manager = EdgeTypeManager(self.connector)
+        self.edge_manager = EdgeManager(self.connector)
 
     def create_defined_schemas(self, name_space: str, node_classes: list[type[BaseNode] | type[BaseNebulaNode]], relation_classes: list[type[BaseRelation] | type[BaseNebulaRelation]]):
         self.space_manager.create_namespace(name_space=name_space)

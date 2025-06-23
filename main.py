@@ -6,11 +6,6 @@ from rich import print as rprint
 
 from sw_nebula_service.engine import Engine, EngineConfig
 from sw_nebula_service.managers.connector import Connector, ConnectorConfig
-from sw_nebula_service.managers.edge_manager import EdgeManager
-from sw_nebula_service.managers.edge_type_manager import EdgeTypeManager
-from sw_nebula_service.managers.space_manager import SpaceManager
-from sw_nebula_service.managers.tag_manager import TagManager
-from sw_nebula_service.managers.vertex_manager import VertexManager
 from sw_nebula_service.models import PREDEFINED_EDGE_CLASSES, PREDEFINED_NODE_CLASSES
 
 host = "192.168.3.70"
@@ -20,14 +15,7 @@ password = "nebula"
 NAME_SPACE = "test_arda"
 
 connector = Connector(ConnectorConfig(host=host, port=port, username=username, password=password))
-engine_config = EngineConfig(
-    connector=connector,
-    space_manager=SpaceManager(connector=connector),
-    tag_manager=TagManager(connector=connector),
-    vertex_manager=VertexManager(connector=connector),
-    edge_type_manager=EdgeTypeManager(connector=connector),
-    edge_manager=EdgeManager(connector=connector),
-)
+engine_config = EngineConfig(connector=connector)
 engine = Engine(engine_config)
 engine.space_manager.delete_all_namespaces()
 engine.space_manager.create_namespace(
@@ -44,11 +32,6 @@ engine.create_defined_schemas(NAME_SPACE, PREDEFINED_NODE_CLASSES, PREDEFINED_ED
 
 
 from hashlib import sha256
-from uuid import uuid4
-
-# Check how many bytes UUID4 stores
-# UUID4 is 128 bits (16 bytes) but the string representation is longer
-# %%
 
 engine.insert_directory_nodes(NAME_SPACE)
 
@@ -62,7 +45,7 @@ def insert_n_random_nodes(engine: Engine, name_space: str, num_nodes: int):
     for i in range(num_nodes):
         node = PdfNode(
             user_id=f"user_{i}",
-            pdf_file_id=i,
+            pdf_file_hash=i,
             pdf_file_name=f"pdf_file_{i}",
             minio_bucket_path=f"minio_bucket_path_{i}",
             lib_name=f"lib_{i}",

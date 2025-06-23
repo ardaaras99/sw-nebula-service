@@ -23,7 +23,7 @@ class OntologyNode(BaseNebulaNode):
 
 class PdfNode(BaseNebulaNode):
     user_id: str
-    pdf_file_id: int
+    pdf_file_hash: str
     pdf_file_name: str
     minio_bucket_path: str
 
