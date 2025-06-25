@@ -22,7 +22,7 @@ class Connector:
 
     def connect(self) -> bool:
         try:
-            self.is_connected = self.connection_pool.init([(self.connector_config.host, self.connector_config.port)])  # noqa: S104
+            self.is_connected = self.connection_pool.init([(self.connector_config.host, self.connector_config.port)], self.config)  # Pass config with timeout
             return self.is_connected
         except Exception:
             return False

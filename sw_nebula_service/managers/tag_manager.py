@@ -75,3 +75,24 @@ class TagManager:
                 return True
             else:
                 raise Exception(f"Failed to create index {index_name} for tag {tag_name}: {result.error_msg()}")
+
+    def get_all_tags(self, name_space: str) -> list[str]:
+        with self.connector.session(name_space) as session:
+            tags = []
+            result = session.execute("SHOW TAGS")
+            if result.is_succeeded():
+                for res in result.as_primitive():
+                    tags.append(res["Name"])
+                return tags
+            else:
+                raise Exception(f"Failed to get all tags: {result.error_msg()}")
+
+    def drop_tag(self, name_space: str, tag_name: str) -> bool:
+        with self.connector.session(name_space) as session:
+            query = f"DROP TAG IF EXISTS {tag_name}"
+            result = session.execute(query)
+            if result.is_succeeded():
+                rprint(f"Tag {tag_name} dropped successfully")
+                return True
+            else:
+                raise Exception(f"Failed to drop tag {tag_name}: {result.error_msg()}")

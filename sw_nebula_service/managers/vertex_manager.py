@@ -31,21 +31,26 @@ def find_class_by_tag_name(tag_name: str) -> type[BaseNode] | type[BaseNebulaNod
     pass
 
 
+def convert_node_to_nebula_data(node: BaseNode | BaseNebulaNode | BaseModel) -> dict[str, Any]:
+    data = node.model_dump()
+    tag_name = pascal_case_to_snake_case(node.__class__.__name__)
+    formatted_data = []
+    field_names = []
+    for field_name in list(data.keys()):
+        field_names.append(field_name)
+        value = data.get(field_name)
+        formatted_data.append(format_field_value(value))
+    field_names_str = ", ".join(field_names)
+    values_str = ", ".join(formatted_data)
+    return tag_name, field_names_str, values_str
+
+
 class VertexManager:
     def __init__(self, connector: Connector):
         self.connector = connector
 
     def insert_vertex(self, name_space: str, node: BaseNode | BaseNebulaNode | BaseModel, vid: str) -> None:
-        data = node.model_dump()
-        tag_name = pascal_case_to_snake_case(node.__class__.__name__)
-        formatted_data = []
-        field_names = []
-        for field_name in list(data.keys()):
-            field_names.append(field_name)
-            value = data.get(field_name)
-            formatted_data.append(format_field_value(value))
-        values_str = ", ".join(formatted_data)
-        field_names_str = ", ".join(field_names)
+        tag_name, field_names_str, values_str = convert_node_to_nebula_data(node)
         query = f'INSERT VERTEX IF NOT EXISTS {tag_name} ({field_names_str}) VALUES "{vid}": ({values_str})'  # noqa: S608
         rprint(f"query: {query}")
         with self.connector.session(name_space) as session:

@@ -1,3 +1,5 @@
+from rich import print as rprint
+
 from sw_nebula_service.managers.connector import Connector
 
 
@@ -28,3 +30,12 @@ class SpaceManager:
                 space_name = space.values[0].value.decode("utf-8")
                 query = f"DROP SPACE {space_name}"
                 result = session.execute(query)
+
+    def delete_namespace(self, name_space: str) -> bool:
+        with self.connector.session() as session:
+            query = f"DROP SPACE {name_space}"
+            result = session.execute(query)
+            if result.is_succeeded():
+                return True
+            else:
+                rprint(f"Failed to delete space {name_space}: {result.error_msg()}")
