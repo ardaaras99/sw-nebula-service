@@ -20,6 +20,7 @@ class EngineConfig(BaseModel):
 
 class Engine:
     def __init__(self, connector: Connector):
+        self.connector = connector
         self.space_manager = SpaceManager(connector)
         self.tag_manager = TagManager(connector)
         self.vertex_manager = VertexManager(connector)
