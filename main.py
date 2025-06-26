@@ -1,9 +1,7 @@
 # %%
 
 
-import time
 
-from rich import print as rprint
 
 from sw_nebula_service.engine import Engine, EngineConfig
 from sw_nebula_service.managers.connector import Connector, ConnectorConfig
