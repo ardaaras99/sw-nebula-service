@@ -1,5 +1,5 @@
 from sw_nebula_service.models.nodes import LibNode, OntologyNode, PdfNode, RootNode
-from sw_nebula_service.models.relations import HasLib, HasOntology, HasPdf
+from sw_nebula_service.models.relations import HasGeneralDocumentInfo, HasLib, HasOntology, HasPdf
 
 PREDEFINED_NODE_CLASSES = [
     RootNode,
@@ -12,4 +12,5 @@ PREDEFINED_RELATION_CLASSES = [
     HasLib,
     HasOntology,
     HasPdf,
+    HasGeneralDocumentInfo,
 ]
