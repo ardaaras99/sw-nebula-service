@@ -6,7 +6,7 @@ from rich import print as rprint
 from sw_onto_generation.base.base_node import BaseNode
 
 from sw_nebula_service.managers.connector import Connector
-from sw_nebula_service.models import BaseNebulaNode
+from sw_nebula_service.models.nodes import BaseNebulaNode
 from sw_nebula_service.utils import pascal_case_to_snake_case
 
 TYPE_MAPPING = {
