@@ -28,3 +28,11 @@ class HasPdf(BaseNebulaRelation):
 class HasGeneralDocumentInfo(BaseNebulaRelation):
     source_node: PdfNode
     target_node: GeneralDocumentInfo
+
+
+PREDEFINED_RELATION_CLASSES = [
+    HasLib,
+    HasOntology,
+    HasPdf,
+    HasGeneralDocumentInfo,
+]

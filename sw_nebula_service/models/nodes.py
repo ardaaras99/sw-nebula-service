@@ -28,3 +28,11 @@ class PdfNode(BaseNebulaNode):
     time_of_upload: datetime
     file_load_status: bool
     kg_extraction_status: bool
+
+
+PREDEFINED_NODE_CLASSES = [
+    RootNode,
+    LibNode,
+    OntologyNode,
+    PdfNode,
+]
