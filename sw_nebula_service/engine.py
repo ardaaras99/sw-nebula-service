@@ -40,7 +40,7 @@ class Engine:
         for i, lib_name in enumerate(DIR_STRUCTURE.keys(), start=1):
             self.vertex_manager.insert_vertex(
                 name_space=name_space,
-                node=LibNode(name=f"lib_{lib_name}", node_id=f"lib_{lib_name}"),
+                node=LibNode(name=f"lib_{lib_name}"),
                 vid=f"lib_{lib_name}",
             )
             self.edge_manager.insert_edge_without_property(
@@ -52,7 +52,7 @@ class Engine:
             for _, ontology_name in enumerate(DIR_STRUCTURE[lib_name], start=i + 1):
                 self.vertex_manager.insert_vertex(
                     name_space=name_space,
-                    node=OntologyNode(name=f"onto_{ontology_name}", node_id=f"onto_{ontology_name}"),
+                    node=OntologyNode(name=f"onto_{ontology_name}"),
                     vid=f"onto_{ontology_name}",
                 )
                 self.edge_manager.insert_edge_without_property(
@@ -61,3 +61,17 @@ class Engine:
                     src_vid=f"lib_{lib_name}",
                     dst_vid=f"onto_{ontology_name}",
                 )
+
+        self.vertex_manager.insert_vertex(name_space=name_space, node=LibNode(name="lib_UNK"), vid="lib_UNK")
+        self.vertex_manager.insert_vertex(name_space=name_space, node=OntologyNode(name="onto_UNK"), vid="onto_UNK")
+        self.edge_manager.insert_edge_without_property(
+            name_space=name_space,
+            edge_type="has_lib",
+            src_vid="root",
+            dst_vid="lib_UNK",
+        )
+        self.edge_manager.insert_edge_without_property(
+            name_space=name_space,
+            edge_type="has_ontology",
+            src_vid="lib_UNK",
+        )
