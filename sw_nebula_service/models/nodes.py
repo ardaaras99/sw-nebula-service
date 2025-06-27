@@ -28,6 +28,7 @@ class PdfNode(BaseNebulaNode):
     time_of_upload: datetime
     file_load_status: bool
     kg_extraction_status: bool
+    general_document_info_id: str
 
     # AI generated
     ai_lib_name: str
