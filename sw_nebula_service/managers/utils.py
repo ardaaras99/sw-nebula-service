@@ -5,6 +5,7 @@ from typing import Any
 from pydantic import BaseModel
 from sw_onto_generation.base.base_node import BaseNode
 
+from sw_nebula_service import NODE_CLASSES
 from sw_nebula_service.models.nodes import BaseNebulaNode
 
 
@@ -79,3 +80,11 @@ def convert_fields_of_class_to_nebula_types(node_class: type[BaseNode] | type[Ba
             possible_type = field_info.annotation
         fields.append(f"{field_name} {TYPE_MAPPING.get(possible_type)}")
     return fields
+
+
+def get_node_class_by_tag_name(tag_name: str) -> type[BaseNode] | type[BaseNebulaNode]:
+    for node_class in NODE_CLASSES:
+        if pascal_case_to_snake_case(node_class.__name__) == tag_name:
+            return node_class
+    else:
+        raise ValueError(f"Node class name not found for tag name: {tag_name}")

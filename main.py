@@ -1,8 +1,6 @@
 # %%
 
 
-
-
 from sw_nebula_service.engine import Engine, EngineConfig
 from sw_nebula_service.managers.connector import Connector, ConnectorConfig
 from sw_nebula_service.utils import FULL_NODE_CLASSES, pascal_case_to_snake_case
@@ -19,7 +17,7 @@ def tag_name_to_class(tag_name: str):
 connector = Connector(ConnectorConfig(host="192.168.3.70", port=32113, username="root", password="nebula"))
 engine = Engine(EngineConfig(connector=connector))
 tag_name = "insan"
-engine.vertex_manager.get_vertex(name_space=NAME_SPACE, tag_name=tag_name, node_class=tag_name_to_class(tag_name))
+engine.vertex_manager.get_vertices_of_node_class(name_space=NAME_SPACE, tag_name=tag_name, node_class=tag_name_to_class(tag_name))
 
 # %%
 
