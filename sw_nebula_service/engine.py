@@ -35,22 +35,9 @@ class Engine:
             self.edge_type_manager.create_edge_type_with_property(name_space=name_space, edge_class=relation)
 
     def insert_directory_nodes(self, name_space: str):
-        node = RootNode(name="root", node_id="root")
-        self.vertex_manager.insert_vertex(name_space=name_space, node=node, vid="root")
-        self.vertex_manager.insert_vertex(name_space=name_space, node=LibNode(name="lib_UNK"), vid="lib_UNK")
-        self.vertex_manager.insert_vertex(name_space=name_space, node=OntologyNode(name="onto_UNK"), vid="onto_UNK")
-        self.edge_manager.insert_edge_without_property(
-            name_space=name_space,
-            edge_type="has_lib",
-            src_vid="root",
-            dst_vid="lib_UNK",
-        )
-        self.edge_manager.insert_edge_without_property(
-            name_space=name_space,
-            edge_type="has_ontology",
-            src_vid="lib_UNK",
-            dst_vid="onto_UNK",
-        )
+        self.vertex_manager.insert_vertex(name_space=name_space, node=RootNode(name="root"), vid="root")
+        self.vertex_manager.insert_vertex(name_space=name_space, node=RootNode(name="pdf_root"), vid="pdf_root")
+
         for i, lib_name in enumerate(DIR_STRUCTURE.keys(), start=1):
             self.vertex_manager.insert_vertex(
                 name_space=name_space,
@@ -58,23 +45,13 @@ class Engine:
                 vid=f"lib_{lib_name}",
             )
 
-            self.vertex_manager.insert_vertex(
-                name_space=name_space,
-                node=OntologyNode(name=f"{lib_name}_onto_UNK"),
-                vid=f"{lib_name}_onto_UNK",
-            )
             self.edge_manager.insert_edge_without_property(
                 name_space=name_space,
                 edge_type="has_lib",
                 src_vid="root",
                 dst_vid=f"lib_{lib_name}",
             )
-            self.edge_manager.insert_edge_without_property(
-                name_space=name_space,
-                edge_type="has_ontology",
-                src_vid=f"lib_{lib_name}",
-                dst_vid=f"{lib_name}_onto_UNK",
-            )
+
             for _, ontology_name in enumerate(DIR_STRUCTURE[lib_name], start=i + 1):
                 self.vertex_manager.insert_vertex(
                     name_space=name_space,
