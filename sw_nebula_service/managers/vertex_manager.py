@@ -4,7 +4,6 @@ from pydantic import BaseModel
 from rich import print as rprint
 from sw_onto_generation.base.base_node import BaseNode
 
-from sw_nebula_service import NODE_CLASSES
 from sw_nebula_service.managers.connector import Connector
 from sw_nebula_service.managers.utils import NebulaBooleanQueryResult, convert_node_to_nebula_data, format_field_value, get_node_class_by_tag_name, pascal_case_to_snake_case
 from sw_nebula_service.models.nodes import BaseNebulaNode
@@ -16,7 +15,7 @@ class VertexManager:
 
     def insert_vertex(self, name_space: str, node: BaseNode | BaseNebulaNode | BaseModel, vid: str) -> NebulaBooleanQueryResult:
         tag_name, field_names_str, values_str = convert_node_to_nebula_data(node)
-        query = f'INSERT VERTEX IF NOT EXISTS {tag_name} ({field_names_str}) VALUES "{vid}": ({values_str})'  # noqa: S608
+        query = f'INSERT VERTEX {tag_name} ({field_names_str}) VALUES "{vid}": ({values_str})'  # noqa: S608
         rprint(f"query: {query}")
         with self.connector.session(name_space) as session:
             result = session.execute(query)
@@ -41,7 +40,7 @@ class VertexManager:
         return nodes
 
     def get_vertex_by_vid(self, name_space: str, vid: str) -> BaseNode | BaseNebulaNode:
-        query = f"MATCH (n) WHERE n.vid = '{vid}' RETURN n"
+        query = f"MATCH (n) WHERE id(n) == '{vid}' RETURN n"
         with self.connector.session(name_space) as session:
             result = session.execute(query)
             if result.is_succeeded():
