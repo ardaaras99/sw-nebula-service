@@ -2,7 +2,7 @@ from rich import print as rprint
 from sw_onto_generation.base.base_relation import BaseRelation
 
 from sw_nebula_service.managers.connector import Connector
-from sw_nebula_service.managers.utils import pascal_case_to_snake_case
+from sw_nebula_service.managers.utils import NebulaBooleanQueryResult, pascal_case_to_snake_case
 from sw_nebula_service.models.relations import BaseNebulaRelation
 
 
@@ -10,17 +10,17 @@ class EdgeTypeManager:
     def __init__(self, connector: Connector):
         self.connector = connector
 
-    def create_edge_type_without_property(self, name_space: str, edge_class: type[BaseNebulaRelation]) -> bool:
+    def create_edge_type_without_property(self, name_space: str, edge_class: type[BaseNebulaRelation]) -> NebulaBooleanQueryResult:
         edge_type = pascal_case_to_snake_case(edge_class.__name__)
         with self.connector.session(name_space) as session:
             query = f"CREATE EDGE IF NOT EXISTS {edge_type}()"
             result = session.execute(query)
             if result.is_succeeded():
-                return True
+                return NebulaBooleanQueryResult(is_succeeded=True, message=f"Successfully created edge type {edge_type}")
             else:
-                raise Exception(f"Failed to create edge type {edge_type}: {result.error_msg()}")
+                return NebulaBooleanQueryResult(is_succeeded=False, message=f"Failed to create edge type {edge_type}: {result.error_msg()}")
 
-    def create_edge_type_with_property(self, name_space: str, edge_class: type[BaseRelation] | type[BaseNebulaRelation]) -> bool:
+    def create_edge_type_with_property(self, name_space: str, edge_class: type[BaseRelation] | type[BaseNebulaRelation]) -> NebulaBooleanQueryResult:
         edge_type = pascal_case_to_snake_case(edge_class.__name__)
         with self.connector.session(name_space) as session:
             import types
@@ -44,15 +44,15 @@ class EdgeTypeManager:
             rprint(f"query: {query}")
             result = session.execute(query)
             if result.is_succeeded():
-                return True
+                return NebulaBooleanQueryResult(is_succeeded=True, message=f"Successfully created edge type {edge_type}")
             else:
-                raise Exception(f"Failed to create edge type {edge_type}: {result.error_msg()}")
+                return NebulaBooleanQueryResult(is_succeeded=False, message=f"Failed to create edge type {edge_type}: {result.error_msg()}")
 
-    def create_edge_type_index(self, name_space: str, edge_type: str, index_name: str) -> bool:
+    def create_edge_type_index(self, name_space: str, edge_type: str, index_name: str) -> NebulaBooleanQueryResult:
         with self.connector.session(name_space) as session:
             query = f"CREATE EDGE INDEX IF NOT EXISTS {index_name} ON {edge_type}()"
             result = session.execute(query)
             if result.is_succeeded():
-                return True
+                return NebulaBooleanQueryResult(is_succeeded=True, message=f"Successfully created index {index_name} for edge type {edge_type}")
             else:
-                raise Exception(f"Failed to create index {index_name} for edge type {edge_type}: {result.error_msg()}")
+                return NebulaBooleanQueryResult(is_succeeded=False, message=f"Failed to create index {index_name} for edge type {edge_type}: {result.error_msg()}")

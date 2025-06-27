@@ -5,7 +5,7 @@ from rich import print as rprint
 from sw_onto_generation.base.base_node import BaseNode
 
 from sw_nebula_service.managers.connector import Connector
-from sw_nebula_service.managers.utils import convert_node_to_nebula_data, format_field_value, pascal_case_to_snake_case
+from sw_nebula_service.managers.utils import NebulaBooleanQueryResult, convert_node_to_nebula_data, format_field_value, pascal_case_to_snake_case
 from sw_nebula_service.models.nodes import BaseNebulaNode
 
 
@@ -13,16 +13,16 @@ class VertexManager:
     def __init__(self, connector: Connector):
         self.connector = connector
 
-    def insert_vertex(self, name_space: str, node: BaseNode | BaseNebulaNode | BaseModel, vid: str) -> None:
+    def insert_vertex(self, name_space: str, node: BaseNode | BaseNebulaNode | BaseModel, vid: str) -> NebulaBooleanQueryResult:
         tag_name, field_names_str, values_str = convert_node_to_nebula_data(node)
         query = f'INSERT VERTEX IF NOT EXISTS {tag_name} ({field_names_str}) VALUES "{vid}": ({values_str})'  # noqa: S608
         rprint(f"query: {query}")
         with self.connector.session(name_space) as session:
             result = session.execute(query)
             if result.is_succeeded():
-                rprint(f"Node {vid} inserted successfully")
+                return NebulaBooleanQueryResult(is_succeeded=True, message=f"Node {vid} inserted successfully")
             else:
-                raise Exception(f"Failed to insert node instance for tag {tag_name}: {result.error_msg()}")
+                return NebulaBooleanQueryResult(is_succeeded=False, message=f"Failed to insert node instance for tag {tag_name}: {result.error_msg()}")
 
     def get_vertex(self, name_space: str, node_class: type[BaseNode] | type[BaseNebulaNode]) -> list[BaseNode | BaseNebulaNode]:
         tag_name = pascal_case_to_snake_case(node_class.__name__)
@@ -46,6 +46,6 @@ class VertexManager:
             result = session.execute(query)
             rprint(f"query: {query}")
             if result.is_succeeded():
-                rprint(f"Node {vid} updated successfully")
+                return NebulaBooleanQueryResult(is_succeeded=True, message=f"Node {vid} updated successfully")
             else:
-                raise Exception(f"Failed to update node field value for tag {tag_name}: {result.error_msg()}")
+                return NebulaBooleanQueryResult(is_succeeded=False, message=f"Failed to update node field value for tag {tag_name}: {result.error_msg()}")

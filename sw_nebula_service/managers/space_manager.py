@@ -1,13 +1,12 @@
-from rich import print as rprint
-
 from sw_nebula_service.managers.connector import Connector
+from sw_nebula_service.managers.utils import NebulaBooleanQueryResult
 
 
 class SpaceManager:
     def __init__(self, connector: Connector):
         self.connector = connector
 
-    def create_namespace(self, name_space: str, partition_num: int = 100, replica_factor: int = 1, vid_type: str = "INT64") -> bool:
+    def create_namespace(self, name_space: str, partition_num: int = 100, replica_factor: int = 1, vid_type: str = "INT64") -> NebulaBooleanQueryResult:
         with self.connector.session() as session:
             query = f"""
             CREATE SPACE IF NOT EXISTS {name_space} (
@@ -18,24 +17,15 @@ class SpaceManager:
             """
             result = session.execute(query)
             if result.is_succeeded():
-                return True
+                return NebulaBooleanQueryResult(is_succeeded=True, message=f"Successfully created space {name_space}")
             else:
-                raise Exception(f"Failed to create space {name_space}: {result.error_msg()}")
+                return NebulaBooleanQueryResult(is_succeeded=False, message=f"Failed to create space {name_space}: {result.error_msg()}")
 
-    def delete_all_namespaces(self) -> bool:
-        with self.connector.session() as session:
-            query = "SHOW SPACES"
-            result = session.execute(query)
-            for space in result.rows():
-                space_name = space.values[0].value.decode("utf-8")
-                query = f"DROP SPACE {space_name}"
-                result = session.execute(query)
-
-    def delete_namespace(self, name_space: str) -> bool:
+    def delete_namespace(self, name_space: str) -> NebulaBooleanQueryResult:
         with self.connector.session() as session:
             query = f"DROP SPACE {name_space}"
             result = session.execute(query)
             if result.is_succeeded():
-                return True
+                return NebulaBooleanQueryResult(is_succeeded=True, message=f"Successfully deleted space {name_space}")
             else:
-                rprint(f"Failed to delete space {name_space}: {result.error_msg()}")
+                return NebulaBooleanQueryResult(is_succeeded=False, message=f"Failed to delete space {name_space}: {result.error_msg()}")

@@ -7,6 +7,12 @@ from sw_onto_generation.base.base_node import BaseNode
 
 from sw_nebula_service.models.nodes import BaseNebulaNode
 
+
+class NebulaBooleanQueryResult(BaseModel):
+    is_succeeded: bool
+    message: str | None = None
+
+
 TYPE_MAPPING = {
     int: "int",
     float: "float",
