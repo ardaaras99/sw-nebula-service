@@ -2,8 +2,8 @@ from rich import print as rprint
 from sw_onto_generation.base.base_relation import BaseRelation
 
 from sw_nebula_service.managers.connector import Connector
+from sw_nebula_service.managers.utils import pascal_case_to_snake_case
 from sw_nebula_service.models.relations import BaseNebulaRelation
-from sw_nebula_service.utils import pascal_case_to_snake_case
 
 
 class EdgeTypeManager:

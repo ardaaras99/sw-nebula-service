@@ -1,45 +1,10 @@
-import types
-from datetime import datetime
-
 from pydantic import BaseModel
 from rich import print as rprint
 from sw_onto_generation.base.base_node import BaseNode
 
 from sw_nebula_service.managers.connector import Connector
+from sw_nebula_service.managers.utils import convert_fields_of_class_to_nebula_types, pascal_case_to_snake_case
 from sw_nebula_service.models.nodes import BaseNebulaNode
-from sw_nebula_service.utils import pascal_case_to_snake_case
-
-TYPE_MAPPING = {
-    int: "int",
-    float: "float",
-    str: "string",
-    bool: "bool",
-    datetime: "datetime",
-}
-
-
-def convert_fields_of_class_to_nebula_types(node_class: type[BaseNode] | type[BaseNebulaNode] | type[BaseModel]) -> str:
-    fields = []
-    for field_name, field_info in node_class.model_fields.items():
-        # rprint(f"field_info.annotation: {field_info.annotation}")
-        if field_info.annotation is None:
-            raise ValueError(f"field_name: {field_name} is None")
-        #! BaseModel check added to skip like Adres inside of Insan
-        elif isinstance(field_info.annotation, types.UnionType):
-            args = getattr(field_info.annotation, "__args__", ())
-            for arg in args:
-                if arg is type(None):
-                    continue
-                elif issubclass(arg, BaseModel):
-                    continue
-                else:
-                    possible_type = arg
-        elif issubclass(field_info.annotation, BaseModel):
-            continue
-        else:
-            possible_type = field_info.annotation
-        fields.append(f"{field_name} {TYPE_MAPPING.get(possible_type)}")
-    return fields
 
 
 class TagManager:
